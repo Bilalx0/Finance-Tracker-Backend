@@ -6,13 +6,17 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
+const targetRoutes = require('./routes/targetRoutes')
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://finance-tracker-version-2.vercel.app/'
+}));
 app.use(bodyParser.json());
 
 app.use('/api', authRoutes);
+app.use('/api', targetRoutes);
 
 sequelize.sync({ force: true }).then(() => {
   app.listen(process.env.PORT, () => { // Use PORT from .env
