@@ -11,7 +11,10 @@ const targetRoutes = require('./routes/targetRoutes')
 
 const app = express();
 app.use(cors({
-  origin: '*'
+  origin: 'https://finance-tracker-version-2.vercel.app',
+  methods: 'POST, GET, OPTIONS',
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true 
 }));
 app.use(bodyParser.json());
 
