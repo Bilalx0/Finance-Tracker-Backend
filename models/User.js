@@ -11,8 +11,9 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  name: {
+  username: { // Renamed from name
     type: DataTypes.STRING,
+    allowNull: false,
   },
 });
 
