@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 
-// Add validation for required environment variables
 const requiredEnvVars = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_DIALECT'];
 requiredEnvVars.forEach((varName) => {
   if (!process.env[varName]) {
@@ -15,7 +14,13 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    port: process.env.DB_PORT || 3306, // Default to 3306 if DB_PORT is not set
+    port: process.env.DB_PORT || 3306,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // THIS is important for Railway SSL
+      },
+    },
   }
 );
 
