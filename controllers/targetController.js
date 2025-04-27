@@ -1,14 +1,19 @@
 const Target = require('../models/Target');
 
+// Get current month/year targets by default
 exports.getAllTargets = async (req, res) => {
   try {
-    const { month, year } = req.query;
-    const where = { userId: req.user.id }; 
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
 
-    if (month) where.month = month;
-    if (year) where.year = year;
-
-    const targets = await Target.findAll({ where });
+    const targets = await Target.findAll({ 
+      where: { 
+        userId: req.user.id,
+        month,
+        year
+      } 
+    });
     res.status(200).json(targets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch targets' });
@@ -17,17 +22,18 @@ exports.getAllTargets = async (req, res) => {
 
 exports.createTarget = async (req, res) => {
   try {
-    const { targetName, targetAmount, month, year } = req.body;
-    if (!targetName || !targetAmount) {
+    const { name, amount } = req.body; // Changed to match frontend
+    if (!name || !amount) {
       return res.status(400).json({ error: 'Target name and amount are required' });
     }
 
+    const currentDate = new Date();
     const target = await Target.create({
-      targetName,
-      targetAmount,
-      month,
-      year,
-      userId: req.user.id, // Assuming user is set from auth middleware
+      name,
+      amount,
+      month: currentDate.getMonth() + 1, // Auto-set
+      year: currentDate.getFullYear(),    // Auto-set
+      userId: req.user.id,
     });
 
     res.status(201).json(target);
@@ -39,14 +45,14 @@ exports.createTarget = async (req, res) => {
 exports.updateTarget = async (req, res) => {
   try {
     const { id } = req.params;
-    const { targetName, targetAmount, month, year } = req.body;
+    const { name, amount } = req.body; // Changed to match frontend
 
     const target = await Target.findOne({ where: { id, userId: req.user.id } });
     if (!target) {
       return res.status(404).json({ error: 'Target not found' });
     }
 
-    await target.update({ targetName, targetAmount, month, year });
+    await target.update({ name, amount });
     res.status(200).json(target);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update target' });
