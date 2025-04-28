@@ -6,7 +6,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
-const targetRoutes = require('./routes/targetRoutes')
+const targetRoutes = require('./routes/targetRoutes');
+const monthlyDataRoutes = require('./routes/monthlyDataRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
 
 const app = express();
@@ -19,9 +22,13 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.use('/api', authRoutes);
-app.use('/api', targetRoutes);
+app.use('/api/targets', targetRoutes);
+app.use('/api/monthly-data', monthlyDataRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/transactions', transactionRoutes);
 
-sequelize.sync({ force: true }).then(() => {
+// NOTE: Setting force: false to prevent data loss in production
+sequelize.sync({ force: false }).then(() => {
   app.listen(process.env.PORT, () => { // Use PORT from .env
     console.log(`Server running on port ${process.env.PORT}`);
   });

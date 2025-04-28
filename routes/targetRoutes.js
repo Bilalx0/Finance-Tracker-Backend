@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const targetController = require('../controllers/targetController');
-const authMiddleware = require('../middleware/authMiddleware'); // Assuming you have authentication
+const authMiddleware = require('../middleware/authMiddleware'); 
 
-router.get('/targets', authMiddleware, targetController.getAllTargets);
-router.post('/targets', authMiddleware, targetController.createTarget);
-router.put('/targets/:id', authMiddleware, targetController.updateTarget);
-router.delete('/targets/:id', authMiddleware, targetController.deleteTarget);
+router.get('/', authMiddleware.protect, targetController.getAllTargets);
+router.post('/', authMiddleware.protect, targetController.createTarget);
+router.put('/:id', authMiddleware.protect, targetController.updateTarget);
+router.delete('/:id', authMiddleware.protect, targetController.deleteTarget);
 
 module.exports = router;
