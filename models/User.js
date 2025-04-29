@@ -15,6 +15,11 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  avatar: {
+    type: DataTypes.STRING(1000), // To store URL or base64 string
+    allowNull: true,
+    defaultValue: null
+  }
 });
 
 module.exports = User;
