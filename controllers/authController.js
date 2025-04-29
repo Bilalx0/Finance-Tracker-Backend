@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
 const User = require('../models/User');
 
 const authController = {
@@ -31,7 +33,15 @@ const authController = {
         return res.status(400).json({ message: 'Invalid credentials' });
       }
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token, user: { id: user.id, email, username: user.username } }); // Changed 'name' to 'username'
+      res.json({ 
+        token, 
+        user: { 
+          id: user.id, 
+          email, 
+          username: user.username,
+          avatar: user.avatar 
+        } 
+      });
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -43,11 +53,78 @@ const authController = {
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-      res.json({ id: user.id, email: user.email, username: user.username }); // Changed 'name' to 'username'
+      res.json({ 
+        id: user.id, 
+        email: user.email, 
+        username: user.username,
+        avatar: user.avatar 
+      });
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },
+  
+  async uploadAvatar(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      // Get the filename of the uploaded file
+      const avatarPath = `/uploads/${req.file.filename}`;
+      
+      // Update user with new avatar path
+      const user = await User.findByPk(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // If user already had an avatar, delete the old file
+      if (user.avatar) {
+        const oldAvatarPath = path.join(__dirname, '..', user.avatar);
+        if (fs.existsSync(oldAvatarPath)) {
+          fs.unlinkSync(oldAvatarPath);
+        }
+      }
+
+      // Update user with new avatar path
+      await user.update({ avatar: avatarPath });
+      
+      res.json({ 
+        message: 'Avatar uploaded successfully', 
+        avatar: avatarPath,
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          avatar: avatarPath
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
+
+  async getAvatar(req, res) {
+    try {
+      const userId = req.params.id;
+      const user = await User.findByPk(userId);
+      
+      if (!user || !user.avatar) {
+        return res.status(404).json({ message: 'Avatar not found' });
+      }
+      
+      const avatarPath = path.join(__dirname, '..', user.avatar);
+      
+      if (!fs.existsSync(avatarPath)) {
+        return res.status(404).json({ message: 'Avatar file not found' });
+      }
+
+      res.sendFile(avatarPath);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
 };
 
 module.exports = authController;

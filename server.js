@@ -1,16 +1,15 @@
 require('dotenv').config(); // Load environment variables
 
-
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const targetRoutes = require('./routes/targetRoutes');
 const monthlyDataRoutes = require('./routes/monthlyDataRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
-
 
 const app = express();
 app.use(cors({
@@ -20,6 +19,9 @@ app.use(cors({
   credentials: true 
 }));
 app.use(bodyParser.json());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api', authRoutes);
 app.use('/api/targets', targetRoutes);
