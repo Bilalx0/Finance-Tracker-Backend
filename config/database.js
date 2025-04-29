@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false, // THIS is important for Railway SSL
+        rejectUnauthorized: false, 
       },
     },
   }
