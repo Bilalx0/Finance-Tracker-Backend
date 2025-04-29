@@ -46,7 +46,7 @@ const authController = {
       });
 
       console.log('User created successfully, generating token');
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
       console.log('Sending response with user data');
       res.status(201).json({
@@ -106,10 +106,18 @@ const authController = {
 
   async profile(req, res) {
     try {
+      console.log('Profile request - User ID:', req.user.id);
       const user = await User.findByPk(req.user.id);
       if (!user) {
+        console.log('User not found for ID:', req.user.id);
         return res.status(404).json({ message: 'User not found' });
       }
+      console.log('Returning user profile:', {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+      });
       res.json({
         id: user.id,
         email: user.email,
@@ -117,6 +125,7 @@ const authController = {
         avatar: user.avatar,
       });
     } catch (error) {
+      console.error('Profile error:', error);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   },
