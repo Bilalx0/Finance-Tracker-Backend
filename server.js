@@ -19,9 +19,10 @@ cloudinary.config({
 
 const app = express();
 app.use(cors({
-  origin: '*', // or use '*' to allow all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: ['https://finance-tracker-version-2.vercel.app', 'http://localhost:5173/'],
+  methods: 'POST, GET, PUT, DELETE, OPTIONS',
+  allowedHeaders: 'Content-Type, Authorization, x-skip-redirect',
+  credentials: true,
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());
