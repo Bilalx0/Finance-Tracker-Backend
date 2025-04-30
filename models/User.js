@@ -11,15 +11,19 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  username: { // Renamed from name
+  username: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   avatar: {
-    type: DataTypes.STRING(1000), // To store URL or base64 string
+    type: DataTypes.STRING(1000),
     allowNull: true,
-    defaultValue: null
-  }
+    defaultValue: null,
+  },
+  refreshToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,

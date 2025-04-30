@@ -5,33 +5,31 @@ const Target = sequelize.define('Target', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
-  },
-  name: {  // Changed from targetName to match frontend
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  amount: {  // Changed from targetAmount to match frontend
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  month: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: () => new Date().getMonth() + 1 // Auto-set current month
-  },
-  year: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: () => new Date().getFullYear() // Auto-set current year
+    primaryKey: true
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  type: {
+    type: DataTypes.ENUM('income', 'expense'),
+    allowNull: false
+  },
+  targetAmount: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  currentAmount: {
+    type: DataTypes.DECIMAL(10, 2),
+    defaultValue: 0.00
+  }
 }, {
   tableName: 'targets',
-  timestamps: true,
+  timestamps: true
 });
 
 module.exports = Target;
