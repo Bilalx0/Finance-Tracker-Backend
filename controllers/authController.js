@@ -46,7 +46,7 @@ const authController = {
       });
 
       console.log('User created successfully, generating token');
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       console.log('Sending response with user data');
       res.status(201).json({
